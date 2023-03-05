@@ -1,12 +1,14 @@
-use crate::lexer::Tokenizer;
+use crate::lexer::tokenize;
 use easy_repl::{command, Command, CommandStatus, Repl};
 use std::io;
 
 mod lexer;
+mod parser;
+#[macro_use]
+mod token;
 
 fn main() -> io::Result<()> {
     println!("Aphrodite REPL v0.0.1");
-    let mut tknzr = Tokenizer::new();
     let mut repl = Repl::builder()
         .add(
             "t",
@@ -17,7 +19,7 @@ fn main() -> io::Result<()> {
                     let mut extended: Vec<&str> = Vec::new();
                     extended.extend(args);
                     let input = extended.join(" ");
-                    match tknzr.tokenize(&input) {
+                    match tokenize(&input) {
                         Ok(tkns) => {
                             println!("{:?}", tkns);
                         }
@@ -32,8 +34,4 @@ fn main() -> io::Result<()> {
 
     repl.run().expect("whoops");
     Ok(())
-    // loop {
-    //     let mut buf = String::new();
-    //     io::stdin().read_line(&mut buf)?;
-    // }
 }
